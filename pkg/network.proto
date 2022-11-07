@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "towncrier/network";
+
+package network;
+
+service NetworkExchange {
+    rpc Send(stream PDU) returns (FIN);
+    rpc Recv(SYN) returns (stream PDU);
+};
+
+message PDU {
+    string sender = 1;
+    repeated string fwd_names = 2;
+    optional bytes msg = 3; 
+};
+
+message SYN {
+    string name = 1;
+}
+
+message FIN {
+    int64 magic = 1;            // Don't send an empty message
+}

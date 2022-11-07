@@ -1,0 +1,11 @@
+{
+    "name": "t2",
+    "port": 2502,
+    "locals": ["client"],
+    "remotes": [
+        {
+            "name": "t1",
+            "addr": "127.0.0.1:2501"
+        }
+    ]
+}
