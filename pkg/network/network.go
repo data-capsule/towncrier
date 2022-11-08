@@ -30,7 +30,6 @@ type Exchange struct {
 
 const (
 	FIN_MAGIC = int64(0xdeadbeef)
-	SYN_MAGIC = int64(0xcafebabe)
 )
 
 func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
