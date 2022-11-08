@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -69,13 +70,13 @@ func main() {
 		ex.Locals[name] = make(chan *network.PDU)
 	}
 
-	ex.Remotes = make(map[string]network.ClientProxy)
+	ex.Remotes = make(map[string]chan *network.PDU)
 	for _, r := range config.Remotes {
-		ex.Remotes[r.Name] = network.ClientProxy{
-			Name:        r.Name,
-			Addr:        r.Addr,
-			IsConnected: true,
-		}
+		ex.Remotes[r.Name] = make(chan *network.PDU)
+		ctx, cancel := context.WithCancel(context.Background())
+		go network.Forward(ctx, r.Addr, ex.Remotes[r.Name])
+		ex.Remote_ctx = append(ex.Remote_ctx, ctx)
+		ex.Remote_cancel = append(ex.Remote_cancel, cancel)
 	}
 
 	network.RegisterNetworkExchangeServer(grpcServer, &ex)

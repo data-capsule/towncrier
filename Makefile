@@ -2,11 +2,15 @@ PROTO_FILES := pkg/network/network.pb.go pkg/network/network_grpc.pb.go
 
 CPP_PROTO := pkg/connectors/cpp/network.pb.h pkg/connectors/cpp/network.pb.cc pkg/connectors/cpp/network.grpc.pb.h pkg/connectors/cpp/network.grpc.pb.cc
 
-all: bin/towncrier $(CPP_PROTO)
+all: bin/towncrier bin/go_echo_client $(CPP_PROTO)
 
-bin/towncrier: pkg/* $(PROTO_FILES) cmd/towncrier/main.go
+bin/towncrier: pkg/* cmd/towncrier/main.go
 	mkdir -p bin
 	go build -o bin/towncrier cmd/towncrier/main.go
+
+bin/go_echo_client: pkg/* $(PROTO_FILES) cmd/go_echo_client/main.go
+	mkdir -p bin
+	go build -o bin/go_echo_client cmd/go_echo_client/main.go
 
 
 $(PROTO_FILES): pkg/network.proto

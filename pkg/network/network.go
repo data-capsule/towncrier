@@ -7,23 +7,19 @@ import (
 	"log"
 
 	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 /* IMPORTANT: Create topology such that clients don't send redundant messages */
 
-type ClientProxy struct {
-	Name        string
-	Addr        string
-	IsConnected bool
-	Client      NetworkExchangeClient
-}
-
 type Exchange struct {
-	Locals        map[string]chan *PDU   // fwd_name => client
-	Remotes       map[string]ClientProxy // sender => client
+	Locals        map[string]chan *PDU // fwd_name => msg channel
+	Remotes       map[string]chan *PDU // remote location => msg channel
 	Self_name     string
 	Client_ctx    []context.Context
 	Client_cancel []context.CancelFunc
+	Remote_ctx    []context.Context
+	Remote_cancel []context.CancelFunc
 
 	UnimplementedNetworkExchangeServer
 }
@@ -35,9 +31,16 @@ const (
 func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 	for {
 		pdu, err := stream.Recv()
-		if err == io.EOF {
+		if err == io.EOF || err == grpc.ErrClientConnClosing || err == grpc.ErrServerStopped {
 			break
 		}
+
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		log.Printf("%+v\n", pdu)
 
 		// Send to a local node if name matches
 		for _, name := range pdu.FwdNames {
@@ -46,7 +49,8 @@ func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 				continue
 			}
 
-			client <- pdu // I don't care if it fails
+			log.Println("Forwarding to", name)
+			client <- pdu
 		}
 
 		// Send to all peers except the sender
@@ -54,30 +58,13 @@ func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 		sender := pdu.Sender
 		pdu.Sender = ex.Self_name
 
-		for peer, cProxy := range ex.Remotes {
+		for peer, c := range ex.Remotes {
 			if sender == peer {
 				continue
 			}
+			log.Println("Forwarding to", peer)
 
-			if !cProxy.IsConnected {
-				var cl_opts []grpc.DialOption
-
-				conn, err := grpc.Dial(cProxy.Addr, cl_opts...)
-				if err != nil {
-					log.Println("Couldn't establish connection with:", peer)
-					continue
-				}
-
-				cProxy.IsConnected = true
-				cProxy.Client = NewNetworkExchangeClient(conn)
-			}
-
-			client := cProxy.Client
-			send_cl, err := client.Send(context.Background())
-			if err != nil {
-				continue
-			}
-			send_cl.Send(pdu)
+			c <- pdu
 		}
 
 	}
@@ -86,6 +73,47 @@ func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 		Magic: FIN_MAGIC,
 	})
 	return err
+}
+
+func Forward(ctx context.Context, addr string, c chan *PDU) {
+	connected := false
+	var conn *grpc.ClientConn
+	var send_client NetworkExchange_SendClient
+
+	for {
+		select {
+		case <-ctx.Done():
+			if connected {
+				conn.Close()
+			}
+			break
+		case msg, chan_open := <-c:
+			if !chan_open {
+				return
+			}
+			var err error
+			log.Println("Forwarding to", addr)
+			if !connected {
+				conn, err = grpc.Dial(addr,
+					grpc.WithTransportCredentials(insecure.NewCredentials()))
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				connected = true
+			}
+			cl := NewNetworkExchangeClient(conn)
+			send_client, err = cl.Send(ctx)
+			if err != nil {
+				connected = false
+				log.Println(err, "Connection reset")
+				continue
+			}
+
+			send_client.Send(msg)
+			log.Println("Forwarding complete")
+		}
+	}
 }
 
 func (ex *Exchange) Recv(in *SYN, receiver NetworkExchange_RecvServer) error {
@@ -99,20 +127,20 @@ func (ex *Exchange) Recv(in *SYN, receiver NetworkExchange_RecvServer) error {
 		return errors.New("Name not registered")
 	}
 
-	go func() {
-
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case msg := <-src:
-				err := receiver.Send(msg)
-				if err != nil {
-					return
-				}
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case msg, chan_open := <-src:
+			if !chan_open {
+				return nil
 			}
+			err := receiver.Send(msg)
+			if err != nil {
+				log.Println(err)
+				return err
+			}
+			log.Println("Forwarding complete")
 		}
-	}()
-
-	return nil
+	}
 }
