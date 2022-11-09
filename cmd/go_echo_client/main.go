@@ -37,6 +37,7 @@ func main() {
 			log.Fatalln(err)
 		}
 		cmdStdout = stdout
+		cmd.Stderr = os.Stderr
 
 		err = cmd.Start()
 		if err != nil {
