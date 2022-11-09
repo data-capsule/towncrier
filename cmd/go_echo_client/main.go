@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"towncrier/pkg/network"
 
 	"google.golang.org/grpc"
@@ -14,8 +15,34 @@ import (
 
 func main() {
 	args := os.Args
-	if len(args) != 4 {
-		log.Fatalln("Usage: ./client name remote_name towncrier_addr:port")
+	if !(len(args) == 4 || len(args) >= 6) {
+		log.Fatalln("Usage: ./client name remote_name towncrier_addr:port [-- cmd arg1 arg2 ...]")
+	}
+	var cmdStdin io.WriteCloser
+	var cmdStdout io.ReadCloser
+	runningCmd := false
+
+	if len(args) > 4 {
+		if args[4] != "--" {
+			log.Fatalln("Usage: ./client name remote_name towncrier_addr:port [-- cmd arg1 arg2 ...]")
+		}
+		cmd := exec.Command(args[5], args[6:]...)
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		cmdStdin = stdin
+		stdout, err := cmd.StdoutPipe()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		cmdStdout = stdout
+
+		err = cmd.Start()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		runningCmd = true
 	}
 
 	name := args[1]
@@ -58,18 +85,30 @@ func main() {
 				}
 
 			} else {
-				log.Printf("%+v\n", msg)
+
+				if !runningCmd {
+					log.Printf("%+v\n", msg)
+				} else {
+					cmdStdin.Write(msg.GetMsg())
+				}
 			}
 		}
 	}()
 
-	var s string
+	var s []byte
 	for {
-		fmt.Scanf("%s", &s)
+		if !runningCmd {
+			fmt.Scanf("%s", &s)
+		} else {
+			_, err := cmdStdout.Read(s)
+			if err != nil {
+				log.Fatalln(err)
+			}
+		}
 		sender.Send(&network.PDU{
 			FwdNames: []string{remote_name},
 			Sender:   name,
-			Msg:      []byte(s),
+			Msg:      s,
 		})
 
 	}
