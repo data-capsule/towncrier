@@ -100,9 +100,12 @@ func main() {
 		if !runningCmd {
 			fmt.Scanf("%s", &s)
 		} else {
-			_, err := cmdStdout.Read(s)
+			n, err := cmdStdout.Read(s)
 			if err != nil {
 				log.Fatalln(err)
+			}
+			if n == 0 {
+				continue
 			}
 		}
 		sender.Send(&network.PDU{
