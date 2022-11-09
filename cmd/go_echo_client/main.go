@@ -98,6 +98,7 @@ func main() {
 
 	inReader := bufio.NewReader(os.Stdin)
 	var s []byte
+	outReader := bufio.NewReader(cmdStdout)
 	for {
 		if !runningCmd {
 			s, err = inReader.ReadBytes('\n')
@@ -106,12 +107,9 @@ func main() {
 			}
 
 		} else {
-			n, err := cmdStdout.Read(s)
+			s, err = outReader.ReadBytes('\n')
 			if err != nil {
 				log.Fatalln(err)
-			}
-			if n == 0 {
-				continue
 			}
 		}
 		sender.Send(&network.PDU{
