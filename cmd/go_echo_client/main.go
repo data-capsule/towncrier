@@ -1,8 +1,8 @@
 package main
 
 import (
+	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -95,10 +95,15 @@ func main() {
 		}
 	}()
 
+	inReader := bufio.NewReader(os.Stdin)
 	var s []byte
 	for {
 		if !runningCmd {
-			fmt.Scanf("%s", &s)
+			s, err = inReader.ReadBytes('\n')
+			if err != nil {
+				log.Fatalln(err)
+			}
+
 		} else {
 			n, err := cmdStdout.Read(s)
 			if err != nil {
