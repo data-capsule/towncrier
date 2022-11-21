@@ -104,12 +104,18 @@ func main() {
 	for {
 		if !runningCmd {
 			s, err = inReader.ReadBytes('\n')
+			if len(s) >= 1 {
+				s = s[:len(s)-1]
+			}
 			if err != nil {
 				log.Fatalln(err)
 			}
 
 		} else {
 			s, err = outReader.ReadBytes('\n')
+			if len(s) >= 1 {
+				s = s[:len(s)-1]
+			}
 			if err != nil {
 				log.Fatalln(err)
 			}
