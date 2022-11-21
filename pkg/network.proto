@@ -10,9 +10,10 @@ service NetworkExchange {
 };
 
 message PDU {
-    string sender = 1;
-    repeated string fwd_names = 2;
-    repeated bytes msg = 3; 
+    string origin = 1;          // Who actually sent the msg
+    string sender = 2;          // Name of the last hop
+    repeated string fwd_names = 3;
+    repeated bytes msg = 4; 
 };
 
 message SYN {

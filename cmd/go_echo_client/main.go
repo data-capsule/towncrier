@@ -119,6 +119,7 @@ func main() {
 
 		sender.Send(&network.PDU{
 			FwdNames: []string{remote_name},
+			Origin:   name,
 			Sender:   name,
 			Msg:      __msg,
 		})

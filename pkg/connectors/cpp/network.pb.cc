@@ -25,6 +25,7 @@ PROTOBUF_CONSTEXPR PDU::PDU(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.fwd_names_)*/{}
   , /*decltype(_impl_.msg_)*/{}
+  , /*decltype(_impl_.origin_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.sender_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PDUDefaultTypeInternal {
@@ -74,6 +75,7 @@ const uint32_t TableStruct_network_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_.origin_),
   PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_.sender_),
   PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_.fwd_names_),
   PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_.msg_),
@@ -94,8 +96,8 @@ const uint32_t TableStruct_network_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::network::PDU)},
-  { 9, -1, -1, sizeof(::network::SYN)},
-  { 16, -1, -1, sizeof(::network::FIN)},
+  { 10, -1, -1, sizeof(::network::SYN)},
+  { 17, -1, -1, sizeof(::network::FIN)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -105,17 +107,17 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_network_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rnetwork.proto\022\007network\"5\n\003PDU\022\016\n\006sende"
-  "r\030\001 \001(\t\022\021\n\tfwd_names\030\002 \003(\t\022\013\n\003msg\030\003 \003(\014\""
-  "\023\n\003SYN\022\014\n\004name\030\001 \001(\t\"\024\n\003FIN\022\r\n\005magic\030\001 \001"
-  "(\0032]\n\017NetworkExchange\022$\n\004Send\022\014.network."
-  "PDU\032\014.network.FIN(\001\022$\n\004Recv\022\014.network.SY"
-  "N\032\014.network.PDU0\001B\023Z\021towncrier/networkb\006"
-  "proto3"
+  "\n\rnetwork.proto\022\007network\"E\n\003PDU\022\016\n\006origi"
+  "n\030\001 \001(\t\022\016\n\006sender\030\002 \001(\t\022\021\n\tfwd_names\030\003 \003"
+  "(\t\022\013\n\003msg\030\004 \003(\014\"\023\n\003SYN\022\014\n\004name\030\001 \001(\t\"\024\n\003"
+  "FIN\022\r\n\005magic\030\001 \001(\0032]\n\017NetworkExchange\022$\n"
+  "\004Send\022\014.network.PDU\032\014.network.FIN(\001\022$\n\004R"
+  "ecv\022\014.network.SYN\032\014.network.PDU0\001B\023Z\021tow"
+  "ncrier/networkb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_network_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_network_2eproto = {
-    false, false, 246, descriptor_table_protodef_network_2eproto,
+    false, false, 262, descriptor_table_protodef_network_2eproto,
     "network.proto",
     &descriptor_table_network_2eproto_once, nullptr, 0, 3,
     schemas, file_default_instances, TableStruct_network_2eproto::offsets,
@@ -148,10 +150,19 @@ PDU::PDU(const PDU& from)
   new (&_impl_) Impl_{
       decltype(_impl_.fwd_names_){from._impl_.fwd_names_}
     , decltype(_impl_.msg_){from._impl_.msg_}
+    , decltype(_impl_.origin_){}
     , decltype(_impl_.sender_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.origin_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.origin_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_origin().empty()) {
+    _this->_impl_.origin_.Set(from._internal_origin(), 
+      _this->GetArenaForAllocation());
+  }
   _impl_.sender_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.sender_.Set("", GetArenaForAllocation());
@@ -170,9 +181,14 @@ inline void PDU::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.fwd_names_){arena}
     , decltype(_impl_.msg_){arena}
+    , decltype(_impl_.origin_){}
     , decltype(_impl_.sender_){}
     , /*decltype(_impl_._cached_size_)*/{}
   };
+  _impl_.origin_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.origin_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   _impl_.sender_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.sender_.Set("", GetArenaForAllocation());
@@ -192,6 +208,7 @@ inline void PDU::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.fwd_names_.~RepeatedPtrField();
   _impl_.msg_.~RepeatedPtrField();
+  _impl_.origin_.Destroy();
   _impl_.sender_.Destroy();
 }
 
@@ -207,6 +224,7 @@ void PDU::Clear() {
 
   _impl_.fwd_names_.Clear();
   _impl_.msg_.Clear();
+  _impl_.origin_.ClearToEmpty();
   _impl_.sender_.ClearToEmpty();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -217,9 +235,19 @@ const char* PDU::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string sender = 1;
+      // string origin = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_origin();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "network.PDU.origin"));
+        } else
+          goto handle_unusual;
+        continue;
+      // string sender = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_sender();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -227,9 +255,9 @@ const char* PDU::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // repeated string fwd_names = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+      // repeated string fwd_names = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr -= 1;
           do {
             ptr += 1;
@@ -238,13 +266,13 @@ const char* PDU::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
             CHK_(ptr);
             CHK_(::_pbi::VerifyUTF8(str, "network.PDU.fwd_names"));
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // repeated bytes msg = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+      // repeated bytes msg = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
           ptr -= 1;
           do {
             ptr += 1;
@@ -252,7 +280,7 @@ const char* PDU::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
             ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -285,30 +313,40 @@ uint8_t* PDU::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string sender = 1;
+  // string origin = 1;
+  if (!this->_internal_origin().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_origin().data(), static_cast<int>(this->_internal_origin().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "network.PDU.origin");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_origin(), target);
+  }
+
+  // string sender = 2;
   if (!this->_internal_sender().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_sender().data(), static_cast<int>(this->_internal_sender().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "network.PDU.sender");
     target = stream->WriteStringMaybeAliased(
-        1, this->_internal_sender(), target);
+        2, this->_internal_sender(), target);
   }
 
-  // repeated string fwd_names = 2;
+  // repeated string fwd_names = 3;
   for (int i = 0, n = this->_internal_fwd_names_size(); i < n; i++) {
     const auto& s = this->_internal_fwd_names(i);
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       s.data(), static_cast<int>(s.length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "network.PDU.fwd_names");
-    target = stream->WriteString(2, s, target);
+    target = stream->WriteString(3, s, target);
   }
 
-  // repeated bytes msg = 3;
+  // repeated bytes msg = 4;
   for (int i = 0, n = this->_internal_msg_size(); i < n; i++) {
     const auto& s = this->_internal_msg(i);
-    target = stream->WriteBytes(3, s, target);
+    target = stream->WriteBytes(4, s, target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -327,7 +365,7 @@ size_t PDU::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated string fwd_names = 2;
+  // repeated string fwd_names = 3;
   total_size += 1 *
       ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.fwd_names_.size());
   for (int i = 0, n = _impl_.fwd_names_.size(); i < n; i++) {
@@ -335,7 +373,7 @@ size_t PDU::ByteSizeLong() const {
       _impl_.fwd_names_.Get(i));
   }
 
-  // repeated bytes msg = 3;
+  // repeated bytes msg = 4;
   total_size += 1 *
       ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.msg_.size());
   for (int i = 0, n = _impl_.msg_.size(); i < n; i++) {
@@ -343,7 +381,14 @@ size_t PDU::ByteSizeLong() const {
       _impl_.msg_.Get(i));
   }
 
-  // string sender = 1;
+  // string origin = 1;
+  if (!this->_internal_origin().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_origin());
+  }
+
+  // string sender = 2;
   if (!this->_internal_sender().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
@@ -370,6 +415,9 @@ void PDU::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_N
 
   _this->_impl_.fwd_names_.MergeFrom(from._impl_.fwd_names_);
   _this->_impl_.msg_.MergeFrom(from._impl_.msg_);
+  if (!from._internal_origin().empty()) {
+    _this->_internal_set_origin(from._internal_origin());
+  }
   if (!from._internal_sender().empty()) {
     _this->_internal_set_sender(from._internal_sender());
   }
@@ -394,6 +442,10 @@ void PDU::InternalSwap(PDU* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.fwd_names_.InternalSwap(&other->_impl_.fwd_names_);
   _impl_.msg_.InternalSwap(&other->_impl_.msg_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.origin_, lhs_arena,
+      &other->_impl_.origin_, rhs_arena
+  );
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.sender_, lhs_arena,
       &other->_impl_.sender_, rhs_arena

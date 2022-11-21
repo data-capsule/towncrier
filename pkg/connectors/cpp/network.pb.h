@@ -185,11 +185,12 @@ class PDU final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kFwdNamesFieldNumber = 2,
-    kMsgFieldNumber = 3,
-    kSenderFieldNumber = 1,
+    kFwdNamesFieldNumber = 3,
+    kMsgFieldNumber = 4,
+    kOriginFieldNumber = 1,
+    kSenderFieldNumber = 2,
   };
-  // repeated string fwd_names = 2;
+  // repeated string fwd_names = 3;
   int fwd_names_size() const;
   private:
   int _internal_fwd_names_size() const;
@@ -213,7 +214,7 @@ class PDU final :
   std::string* _internal_add_fwd_names();
   public:
 
-  // repeated bytes msg = 3;
+  // repeated bytes msg = 4;
   int msg_size() const;
   private:
   int _internal_msg_size() const;
@@ -237,7 +238,21 @@ class PDU final :
   std::string* _internal_add_msg();
   public:
 
-  // string sender = 1;
+  // string origin = 1;
+  void clear_origin();
+  const std::string& origin() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_origin(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_origin();
+  PROTOBUF_NODISCARD std::string* release_origin();
+  void set_allocated_origin(std::string* origin);
+  private:
+  const std::string& _internal_origin() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_origin(const std::string& value);
+  std::string* _internal_mutable_origin();
+  public:
+
+  // string sender = 2;
   void clear_sender();
   const std::string& sender() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -261,6 +276,7 @@ class PDU final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> fwd_names_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> msg_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr origin_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr sender_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -579,7 +595,57 @@ class FIN final :
 #endif  // __GNUC__
 // PDU
 
-// string sender = 1;
+// string origin = 1;
+inline void PDU::clear_origin() {
+  _impl_.origin_.ClearToEmpty();
+}
+inline const std::string& PDU::origin() const {
+  // @@protoc_insertion_point(field_get:network.PDU.origin)
+  return _internal_origin();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PDU::set_origin(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.origin_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:network.PDU.origin)
+}
+inline std::string* PDU::mutable_origin() {
+  std::string* _s = _internal_mutable_origin();
+  // @@protoc_insertion_point(field_mutable:network.PDU.origin)
+  return _s;
+}
+inline const std::string& PDU::_internal_origin() const {
+  return _impl_.origin_.Get();
+}
+inline void PDU::_internal_set_origin(const std::string& value) {
+  
+  _impl_.origin_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PDU::_internal_mutable_origin() {
+  
+  return _impl_.origin_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PDU::release_origin() {
+  // @@protoc_insertion_point(field_release:network.PDU.origin)
+  return _impl_.origin_.Release();
+}
+inline void PDU::set_allocated_origin(std::string* origin) {
+  if (origin != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.origin_.SetAllocated(origin, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.origin_.IsDefault()) {
+    _impl_.origin_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:network.PDU.origin)
+}
+
+// string sender = 2;
 inline void PDU::clear_sender() {
   _impl_.sender_.ClearToEmpty();
 }
@@ -629,7 +695,7 @@ inline void PDU::set_allocated_sender(std::string* sender) {
   // @@protoc_insertion_point(field_set_allocated:network.PDU.sender)
 }
 
-// repeated string fwd_names = 2;
+// repeated string fwd_names = 3;
 inline int PDU::_internal_fwd_names_size() const {
   return _impl_.fwd_names_.size();
 }
@@ -704,7 +770,7 @@ PDU::mutable_fwd_names() {
   return &_impl_.fwd_names_;
 }
 
-// repeated bytes msg = 3;
+// repeated bytes msg = 4;
 inline int PDU::_internal_msg_size() const {
   return _impl_.msg_.size();
 }
