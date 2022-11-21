@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"io"
 	"log"
@@ -90,7 +91,8 @@ func main() {
 				if !runningCmd {
 					log.Printf("%+v\n", msg)
 				} else {
-					cmdStdin.Write(msg.GetMsg())
+					__msg := bytes.Join(msg.GetMsg(), []byte(" "))
+					cmdStdin.Write(__msg)
 				}
 			}
 		}
@@ -112,10 +114,13 @@ func main() {
 				log.Fatalln(err)
 			}
 		}
+
+		__msg := bytes.Split(s, []byte(" "))
+
 		sender.Send(&network.PDU{
 			FwdNames: []string{remote_name},
 			Sender:   name,
-			Msg:      s,
+			Msg:      __msg,
 		})
 
 	}

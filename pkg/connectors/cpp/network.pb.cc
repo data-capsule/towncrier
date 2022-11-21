@@ -23,11 +23,10 @@ namespace _pbi = _pb::internal;
 namespace network {
 PROTOBUF_CONSTEXPR PDU::PDU(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.fwd_names_)*/{}
+    /*decltype(_impl_.fwd_names_)*/{}
+  , /*decltype(_impl_.msg_)*/{}
   , /*decltype(_impl_.sender_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.msg_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}} {}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PDUDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PDUDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -69,7 +68,7 @@ static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_netwo
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_network_2eproto = nullptr;
 
 const uint32_t TableStruct_network_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_._has_bits_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::network::PDU, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -78,9 +77,6 @@ const uint32_t TableStruct_network_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_.sender_),
   PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_.fwd_names_),
   PROTOBUF_FIELD_OFFSET(::network::PDU, _impl_.msg_),
-  ~0u,
-  ~0u,
-  0,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::network::SYN, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -97,9 +93,9 @@ const uint32_t TableStruct_network_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::network::FIN, _impl_.magic_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 9, -1, sizeof(::network::PDU)},
-  { 12, -1, -1, sizeof(::network::SYN)},
-  { 19, -1, -1, sizeof(::network::FIN)},
+  { 0, -1, -1, sizeof(::network::PDU)},
+  { 9, -1, -1, sizeof(::network::SYN)},
+  { 16, -1, -1, sizeof(::network::FIN)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -109,17 +105,17 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_network_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rnetwork.proto\022\007network\"B\n\003PDU\022\016\n\006sende"
-  "r\030\001 \001(\t\022\021\n\tfwd_names\030\002 \003(\t\022\020\n\003msg\030\003 \001(\014H"
-  "\000\210\001\001B\006\n\004_msg\"\023\n\003SYN\022\014\n\004name\030\001 \001(\t\"\024\n\003FIN"
-  "\022\r\n\005magic\030\001 \001(\0032]\n\017NetworkExchange\022$\n\004Se"
-  "nd\022\014.network.PDU\032\014.network.FIN(\001\022$\n\004Recv"
-  "\022\014.network.SYN\032\014.network.PDU0\001B\023Z\021towncr"
-  "ier/networkb\006proto3"
+  "\n\rnetwork.proto\022\007network\"5\n\003PDU\022\016\n\006sende"
+  "r\030\001 \001(\t\022\021\n\tfwd_names\030\002 \003(\t\022\013\n\003msg\030\003 \003(\014\""
+  "\023\n\003SYN\022\014\n\004name\030\001 \001(\t\"\024\n\003FIN\022\r\n\005magic\030\001 \001"
+  "(\0032]\n\017NetworkExchange\022$\n\004Send\022\014.network."
+  "PDU\032\014.network.FIN(\001\022$\n\004Recv\022\014.network.SY"
+  "N\032\014.network.PDU0\001B\023Z\021towncrier/networkb\006"
+  "proto3"
   ;
 static ::_pbi::once_flag descriptor_table_network_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_network_2eproto = {
-    false, false, 259, descriptor_table_protodef_network_2eproto,
+    false, false, 246, descriptor_table_protodef_network_2eproto,
     "network.proto",
     &descriptor_table_network_2eproto_once, nullptr, 0, 3,
     schemas, file_default_instances, TableStruct_network_2eproto::offsets,
@@ -138,10 +134,6 @@ namespace network {
 
 class PDU::_Internal {
  public:
-  using HasBits = decltype(std::declval<PDU>()._impl_._has_bits_);
-  static void set_has_msg(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
 };
 
 PDU::PDU(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -154,11 +146,10 @@ PDU::PDU(const PDU& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   PDU* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.fwd_names_){from._impl_.fwd_names_}
+      decltype(_impl_.fwd_names_){from._impl_.fwd_names_}
+    , decltype(_impl_.msg_){from._impl_.msg_}
     , decltype(_impl_.sender_){}
-    , decltype(_impl_.msg_){}};
+    , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _impl_.sender_.InitDefault();
@@ -169,14 +160,6 @@ PDU::PDU(const PDU& from)
     _this->_impl_.sender_.Set(from._internal_sender(), 
       _this->GetArenaForAllocation());
   }
-  _impl_.msg_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.msg_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_msg()) {
-    _this->_impl_.msg_.Set(from._internal_msg(), 
-      _this->GetArenaForAllocation());
-  }
   // @@protoc_insertion_point(copy_constructor:network.PDU)
 }
 
@@ -185,19 +168,14 @@ inline void PDU::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.fwd_names_){arena}
+      decltype(_impl_.fwd_names_){arena}
+    , decltype(_impl_.msg_){arena}
     , decltype(_impl_.sender_){}
-    , decltype(_impl_.msg_){}
+    , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.sender_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.sender_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.msg_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.msg_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
@@ -213,8 +191,8 @@ PDU::~PDU() {
 inline void PDU::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.fwd_names_.~RepeatedPtrField();
+  _impl_.msg_.~RepeatedPtrField();
   _impl_.sender_.Destroy();
-  _impl_.msg_.Destroy();
 }
 
 void PDU::SetCachedSize(int size) const {
@@ -228,18 +206,13 @@ void PDU::Clear() {
   (void) cached_has_bits;
 
   _impl_.fwd_names_.Clear();
+  _impl_.msg_.Clear();
   _impl_.sender_.ClearToEmpty();
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    _impl_.msg_.ClearNonDefaultToEmpty();
-  }
-  _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
 const char* PDU::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
@@ -269,12 +242,17 @@ const char* PDU::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // optional bytes msg = 3;
+      // repeated bytes msg = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_msg();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_msg();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -294,7 +272,6 @@ const char* PDU::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
     CHK_(ptr != nullptr);
   }  // while
 message_done:
-  _impl_._has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
@@ -328,10 +305,10 @@ uint8_t* PDU::_InternalSerialize(
     target = stream->WriteString(2, s, target);
   }
 
-  // optional bytes msg = 3;
-  if (_internal_has_msg()) {
-    target = stream->WriteBytesMaybeAliased(
-        3, this->_internal_msg(), target);
+  // repeated bytes msg = 3;
+  for (int i = 0, n = this->_internal_msg_size(); i < n; i++) {
+    const auto& s = this->_internal_msg(i);
+    target = stream->WriteBytes(3, s, target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -358,19 +335,19 @@ size_t PDU::ByteSizeLong() const {
       _impl_.fwd_names_.Get(i));
   }
 
+  // repeated bytes msg = 3;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.msg_.size());
+  for (int i = 0, n = _impl_.msg_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+      _impl_.msg_.Get(i));
+  }
+
   // string sender = 1;
   if (!this->_internal_sender().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_sender());
-  }
-
-  // optional bytes msg = 3;
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-        this->_internal_msg());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -392,11 +369,9 @@ void PDU::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_N
   (void) cached_has_bits;
 
   _this->_impl_.fwd_names_.MergeFrom(from._impl_.fwd_names_);
+  _this->_impl_.msg_.MergeFrom(from._impl_.msg_);
   if (!from._internal_sender().empty()) {
     _this->_internal_set_sender(from._internal_sender());
-  }
-  if (from._internal_has_msg()) {
-    _this->_internal_set_msg(from._internal_msg());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -417,15 +392,11 @@ void PDU::InternalSwap(PDU* other) {
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   _impl_.fwd_names_.InternalSwap(&other->_impl_.fwd_names_);
+  _impl_.msg_.InternalSwap(&other->_impl_.msg_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.sender_, lhs_arena,
       &other->_impl_.sender_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.msg_, lhs_arena,
-      &other->_impl_.msg_, rhs_arena
   );
 }
 

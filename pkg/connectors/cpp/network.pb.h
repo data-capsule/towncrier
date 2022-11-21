@@ -186,8 +186,8 @@ class PDU final :
 
   enum : int {
     kFwdNamesFieldNumber = 2,
-    kSenderFieldNumber = 1,
     kMsgFieldNumber = 3,
+    kSenderFieldNumber = 1,
   };
   // repeated string fwd_names = 2;
   int fwd_names_size() const;
@@ -213,6 +213,30 @@ class PDU final :
   std::string* _internal_add_fwd_names();
   public:
 
+  // repeated bytes msg = 3;
+  int msg_size() const;
+  private:
+  int _internal_msg_size() const;
+  public:
+  void clear_msg();
+  const std::string& msg(int index) const;
+  std::string* mutable_msg(int index);
+  void set_msg(int index, const std::string& value);
+  void set_msg(int index, std::string&& value);
+  void set_msg(int index, const char* value);
+  void set_msg(int index, const void* value, size_t size);
+  std::string* add_msg();
+  void add_msg(const std::string& value);
+  void add_msg(std::string&& value);
+  void add_msg(const char* value);
+  void add_msg(const void* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& msg() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_msg();
+  private:
+  const std::string& _internal_msg(int index) const;
+  std::string* _internal_add_msg();
+  public:
+
   // string sender = 1;
   void clear_sender();
   const std::string& sender() const;
@@ -227,24 +251,6 @@ class PDU final :
   std::string* _internal_mutable_sender();
   public:
 
-  // optional bytes msg = 3;
-  bool has_msg() const;
-  private:
-  bool _internal_has_msg() const;
-  public:
-  void clear_msg();
-  const std::string& msg() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_msg(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_msg();
-  PROTOBUF_NODISCARD std::string* release_msg();
-  void set_allocated_msg(std::string* msg);
-  private:
-  const std::string& _internal_msg() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_msg(const std::string& value);
-  std::string* _internal_mutable_msg();
-  public:
-
   // @@protoc_insertion_point(class_scope:network.PDU)
  private:
   class _Internal;
@@ -253,11 +259,10 @@ class PDU final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> fwd_names_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> msg_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr sender_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr msg_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_network_2eproto;
@@ -699,72 +704,79 @@ PDU::mutable_fwd_names() {
   return &_impl_.fwd_names_;
 }
 
-// optional bytes msg = 3;
-inline bool PDU::_internal_has_msg() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
+// repeated bytes msg = 3;
+inline int PDU::_internal_msg_size() const {
+  return _impl_.msg_.size();
 }
-inline bool PDU::has_msg() const {
-  return _internal_has_msg();
+inline int PDU::msg_size() const {
+  return _internal_msg_size();
 }
 inline void PDU::clear_msg() {
-  _impl_.msg_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_.msg_.Clear();
 }
-inline const std::string& PDU::msg() const {
-  // @@protoc_insertion_point(field_get:network.PDU.msg)
-  return _internal_msg();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void PDU::set_msg(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000001u;
- _impl_.msg_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:network.PDU.msg)
-}
-inline std::string* PDU::mutable_msg() {
-  std::string* _s = _internal_mutable_msg();
-  // @@protoc_insertion_point(field_mutable:network.PDU.msg)
+inline std::string* PDU::add_msg() {
+  std::string* _s = _internal_add_msg();
+  // @@protoc_insertion_point(field_add_mutable:network.PDU.msg)
   return _s;
 }
-inline const std::string& PDU::_internal_msg() const {
-  return _impl_.msg_.Get();
+inline const std::string& PDU::_internal_msg(int index) const {
+  return _impl_.msg_.Get(index);
 }
-inline void PDU::_internal_set_msg(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.msg_.Set(value, GetArenaForAllocation());
+inline const std::string& PDU::msg(int index) const {
+  // @@protoc_insertion_point(field_get:network.PDU.msg)
+  return _internal_msg(index);
 }
-inline std::string* PDU::_internal_mutable_msg() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  return _impl_.msg_.Mutable(GetArenaForAllocation());
+inline std::string* PDU::mutable_msg(int index) {
+  // @@protoc_insertion_point(field_mutable:network.PDU.msg)
+  return _impl_.msg_.Mutable(index);
 }
-inline std::string* PDU::release_msg() {
-  // @@protoc_insertion_point(field_release:network.PDU.msg)
-  if (!_internal_has_msg()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  auto* p = _impl_.msg_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.msg_.IsDefault()) {
-    _impl_.msg_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+inline void PDU::set_msg(int index, const std::string& value) {
+  _impl_.msg_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:network.PDU.msg)
 }
-inline void PDU::set_allocated_msg(std::string* msg) {
-  if (msg != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000001u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
-  }
-  _impl_.msg_.SetAllocated(msg, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.msg_.IsDefault()) {
-    _impl_.msg_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:network.PDU.msg)
+inline void PDU::set_msg(int index, std::string&& value) {
+  _impl_.msg_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:network.PDU.msg)
+}
+inline void PDU::set_msg(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.msg_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:network.PDU.msg)
+}
+inline void PDU::set_msg(int index, const void* value, size_t size) {
+  _impl_.msg_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:network.PDU.msg)
+}
+inline std::string* PDU::_internal_add_msg() {
+  return _impl_.msg_.Add();
+}
+inline void PDU::add_msg(const std::string& value) {
+  _impl_.msg_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:network.PDU.msg)
+}
+inline void PDU::add_msg(std::string&& value) {
+  _impl_.msg_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:network.PDU.msg)
+}
+inline void PDU::add_msg(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.msg_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:network.PDU.msg)
+}
+inline void PDU::add_msg(const void* value, size_t size) {
+  _impl_.msg_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:network.PDU.msg)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+PDU::msg() const {
+  // @@protoc_insertion_point(field_list:network.PDU.msg)
+  return _impl_.msg_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+PDU::mutable_msg() {
+  // @@protoc_insertion_point(field_mutable_list:network.PDU.msg)
+  return &_impl_.msg_;
 }
 
 // -------------------------------------------------------------------

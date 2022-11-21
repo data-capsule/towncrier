@@ -12,7 +12,7 @@ service NetworkExchange {
 message PDU {
     string sender = 1;
     repeated string fwd_names = 2;
-    optional bytes msg = 3; 
+    repeated bytes msg = 3; 
 };
 
 message SYN {
