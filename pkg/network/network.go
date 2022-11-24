@@ -42,6 +42,8 @@ func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 
 		log.Printf("%+v\n", pdu)
 
+		fwd_to_a_local := false
+
 		// Send to a local node if name matches
 		for _, name := range pdu.FwdNames {
 			client, ok := ex.Locals[name]
@@ -50,7 +52,13 @@ func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 			}
 
 			log.Println("Forwarding to", name)
+			fwd_to_a_local = true
 			client <- pdu
+		}
+
+		if fwd_to_a_local {
+			// Don't forward remote peers, if name was found locally.
+			continue
 		}
 
 		// Send to all peers except the sender
