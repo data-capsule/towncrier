@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"log"
+	"strings"
 
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -46,14 +47,14 @@ func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 
 		// Send to a local node if name matches
 		for _, name := range pdu.FwdNames {
-			client, ok := ex.Locals[name]
-			if !ok {
-				continue
+			for client_name, client := range ex.Locals {
+				if strings.HasPrefix(client_name, name) {
+					log.Println("Forwarding to", name)
+					fwd_to_a_local = true
+					client <- pdu
+				}
 			}
 
-			log.Println("Forwarding to", name)
-			fwd_to_a_local = true
-			client <- pdu
 		}
 
 		if fwd_to_a_local {
