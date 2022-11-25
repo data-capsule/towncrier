@@ -41,7 +41,7 @@ func (ex *Exchange) Send(stream NetworkExchange_SendServer) error {
 			return err
 		}
 
-		log.Printf("%+v\n", pdu)
+		log.Printf("Message from %s\n", pdu.Origin)
 
 		fwd_to_a_local := false
 
@@ -135,6 +135,7 @@ func (ex *Exchange) Recv(in *SYN, receiver NetworkExchange_RecvServer) error {
 	if !ok {
 		return errors.New("Name not registered")
 	}
+	log.Println("Registered", name)
 
 	for {
 		select {
