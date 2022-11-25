@@ -56,6 +56,9 @@ func main() {
 
 	var serv_opts []grpc.ServerOption
 	serv_opts = append(serv_opts, grpc.KeepaliveParams(keepalive.ServerParameters{}))
+	serv_opts = append(serv_opts, grpc.MaxMsgSize(20971520))
+	serv_opts = append(serv_opts, grpc.MaxRecvMsgSize(20971520))
+	serv_opts = append(serv_opts, grpc.MaxSendMsgSize(20971520))
 	grpcServer := grpc.NewServer(serv_opts...)
 
 	lis, err := net.Listen("tcp", port)
