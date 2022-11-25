@@ -115,6 +115,7 @@ func Forward(ctx context.Context, addr string, c chan *PDU) {
 			send_client, err = cl.Send(ctx)
 			if err != nil {
 				connected = false
+				conn.Close()
 				log.Println(err, "Connection reset")
 				continue
 			}

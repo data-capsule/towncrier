@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 	"towncrier/pkg/network"
 
 	"google.golang.org/grpc"
@@ -69,6 +70,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	req_cnt := 0
+	res_cnt := 0
+
 	go func() {
 		receiver, err := client.Recv(context.Background(), &network.SYN{
 			Name: name,
@@ -94,6 +98,8 @@ func main() {
 					__msg := bytes.Join(msg.GetMsg(), []byte(" "))
 					cmdStdin.Write(__msg)
 				}
+
+				res_cnt++
 			}
 		}
 	}()
@@ -108,7 +114,8 @@ func main() {
 				s = s[:len(s)-1]
 			}
 			if err != nil {
-				log.Fatalln(err)
+				log.Println(err)
+				break
 			}
 
 		} else {
@@ -117,7 +124,8 @@ func main() {
 				s = s[:len(s)-1]
 			}
 			if err != nil {
-				log.Fatalln(err)
+				log.Println(err)
+				break
 			}
 		}
 
@@ -129,7 +137,14 @@ func main() {
 			Sender:   name,
 			Msg:      __msg,
 		})
+		req_cnt++
 
 	}
+
+	log.Println("End of Input")
+	for req_cnt > res_cnt {
+		time.Sleep(1 * time.Second)
+	}
+	log.Fatalln("All responses received")
 
 }
