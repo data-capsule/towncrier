@@ -146,6 +146,11 @@ func (ex *Exchange) Recv(in *SYN, receiver NetworkExchange_RecvServer) error {
 			if !chan_open {
 				return nil
 			}
+			if receiver.Context().Err() != nil {
+				src <- msg
+				log.Println("Context closing, thread should be reopened later")
+				return nil
+			}
 			err := receiver.Send(msg)
 			if err != nil {
 				log.Println(err)

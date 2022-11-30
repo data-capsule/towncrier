@@ -1,0 +1,6 @@
+{
+    "name": "t1",
+    "port": 2501,
+    "locals": ["c1", "c2"],
+    "remotes": []
+}
